@@ -8,16 +8,20 @@ import { loadVectorStore } from '../utils/vector_store';
 import { type MongoClient } from 'mongodb';
 
 export async function POST(request: Request) {
+  console.log("ingesting PDF...")
   let mongoDbClient: MongoClient | null = null;
 
+  console.log("awaiting request.json()...")
   const { fileUrl, fileName, vectorStoreId } = await request.json();
-
+  
+  console.log("awaiting auth")
   const { userId } = getAuth(request as any);
-
+  
   if (!userId) {
     return NextResponse.json({ error: 'You must be logged in to ingest data' });
   }
 
+  console.log("awaiting prisma.doc.count")
   const docAmount = await prisma.document.count({
     where: {
       userId,
@@ -29,7 +33,7 @@ export async function POST(request: Request) {
       error: 'You have reached the maximum number of documents',
     });
   }
-
+  console.log("awaiting prisma.doc.create")
   const doc = await prisma.document.create({
     data: {
       fileName,
