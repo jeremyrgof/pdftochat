@@ -67,6 +67,7 @@ export async function POST(request: Request) {
     /* create and store the embeddings in the vectorStore */
     const embeddings = loadEmbeddingsModel();
 
+    console.log('creating vector store...');
     const store = await loadVectorStore({
       namespace: doc.id,
       embeddings,
@@ -77,7 +78,9 @@ export async function POST(request: Request) {
     }
 
     // embed the PDF documents
+    console.log(`awaiting vectorstore.addDocuments: ${splitDocs.length}`)
     await vectorstore.addDocuments(splitDocs);
+    console.log(`FINISHED vectorstore.addDocuments: ${splitDocs.length}`)
   } catch (error) {
     console.log('error', error);
     return NextResponse.json({ error: 'Failed to ingest your data' });
