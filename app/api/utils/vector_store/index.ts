@@ -11,6 +11,7 @@ export async function loadVectorStore({
 }) {
   const vectorStoreEnv = process.env.NEXT_PUBLIC_VECTORSTORE ?? 'pinecone';
 
+  console.log(`"loadVectorStore" -> using vector store: ${vectorStoreEnv}`)
   if (vectorStoreEnv === 'pinecone') {
     return await loadPineconeStore({
       namespace,

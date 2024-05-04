@@ -13,14 +13,18 @@ export async function loadPineconeStore({
     apiKey: process.env.PINECONE_API_KEY ?? '',
   });
 
+
   const PINECONE_INDEX_NAME = process.env.PINECONE_INDEX_NAME ?? '';
   const index = pinecone.index(PINECONE_INDEX_NAME);
 
+  console.log('"pincecone.ts" -> awaiting pincecone index')
   const vectorstore = await PineconeStore.fromExistingIndex(embeddings, {
     pineconeIndex: index,
     namespace,
     textKey: 'text',
   });
+
+  console.log(`pincecone index exists: ${!!vectorstore}`)
 
   return {
     vectorstore,
