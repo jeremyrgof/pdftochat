@@ -73,12 +73,14 @@ export async function POST(request: Request) {
       embeddings,
     });
     const vectorstore = store.vectorstore;
+    console.log(`vectorStore contents: ${JSON.stringify(vectorstore)}`)
     if ('mongoDbClient' in store) {
       mongoDbClient = store.mongoDbClient;
     }
 
     // embed the PDF documents
     console.log(`awaiting vectorstore.addDocuments: ${splitDocs.length}`)
+    // app timeout at addDocuments
     await vectorstore.addDocuments(splitDocs);
     console.log(`FINISHED vectorstore.addDocuments: ${splitDocs.length}`)
   } catch (error) {
