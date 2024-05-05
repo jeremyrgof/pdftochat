@@ -4,6 +4,7 @@ import { UploadDropzone } from 'react-uploader';
 import { Uploader } from 'uploader';
 import { useRouter } from 'next/navigation';
 import DocIcon from '@/components/ui/DocIcon';
+import TrashIcon from '@/components/ui/TrashIcon';
 import { formatDistanceToNow } from 'date-fns';
 import { useState } from 'react';
 
@@ -70,6 +71,21 @@ export default function DashboardClient({ docsList }: { docsList: any }) {
     router.push(`/document/${data.id}`);
   }
 
+  async function deletePdf(documentId: string){
+    let res = await fetch('/api/deletePdf', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        documentId
+      }),
+    });
+
+    let data = await res.json();
+    router.refresh()
+  }
+
   return (
     <div className="mx-auto flex flex-col gap-4 container mt-10">
       <h1 className="text-4xl leading-[1.1] tracking-tighter font-medium text-center">
@@ -91,6 +107,12 @@ export default function DashboardClient({ docsList }: { docsList: any }) {
                   <span>{doc.fileName}</span>
                 </button>
                 <span>{formatDistanceToNow(doc.createdAt)} ago</span>
+                <button
+                  
+                  onClick={()=> deletePdf(doc.id)}
+                >
+                  <TrashIcon/>
+                </button>
               </div>
             ))}
           </div>
