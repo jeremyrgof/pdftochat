@@ -42,6 +42,9 @@ export async function POST(request: Request) {
     },
   });
 
+  console.log(`document contents:${JSON.stringify(doc)}`)
+  console.log(`document ID:${doc.id}`)
+
   const namespace = doc.id;
 
   try {
@@ -69,7 +72,7 @@ export async function POST(request: Request) {
 
     console.log('creating vector store...');
     const store = await loadVectorStore({
-      namespace: doc.id,
+      namespace: namespace,
       embeddings,
     });
     const vectorstore = store.vectorstore;
