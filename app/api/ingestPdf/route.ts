@@ -56,8 +56,8 @@ export async function POST(request: Request) {
 
     /* Split text into chunks */
     const textSplitter = new RecursiveCharacterTextSplitter({
-      chunkSize: 1000,
-      chunkOverlap: 200,
+      chunkSize: 1500,
+      chunkOverlap: 120,
     });
     const splitDocs = await textSplitter.splitDocuments(rawDocs);
     // Necessary for Mongo - we'll query on this later.
