@@ -16,6 +16,7 @@ export async function loadPineconeStore({
 
   const PINECONE_INDEX_NAME = process.env.PINECONE_INDEX_NAME ?? '';
   const index = pinecone.index(PINECONE_INDEX_NAME);
+  console.log(`pincecone index: ${JSON.stringify(index)}`)
 
   console.log('"pincecone.ts" -> awaiting pincecone index')
   const vectorstore = await PineconeStore.fromExistingIndex(embeddings, {
