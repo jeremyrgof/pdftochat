@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import {deleteFile} from '../utils/cdn'
 import prisma from '@/utils/prisma';
 import { getAuth } from '@clerk/nextjs/server';
 import { loadEmbeddingsModel } from '../utils/embeddings';
@@ -10,15 +11,24 @@ export async function POST(request: Request) {
   const { documentId } = await request.json();  
   const namespace = documentId
   //Remove from PG
-  await prisma.document.delete({
+  const deletedDoc = await prisma.document.delete({
     where: {
       id: namespace          
+    },
+    select: {
+      fileUrl:true
     }
   });
   
   let mongoDbClient: MongoClient | null = null;
   try{
 
+    //Remove PDF from Bytescale CDN  
+    await deleteFile({
+      'queryString': {
+        filePath: deletedDoc.fileUrl.substring(deletedDoc.fileUrl.indexOf("/uploads"))
+      }
+    })  
     
     //Remove from VectorStore
     const embeddings = loadEmbeddingsModel();
@@ -43,7 +53,7 @@ export async function POST(request: Request) {
   }
   catch (error) {
     console.log('error', error);
-    return NextResponse.json({ error: 'Failed to ingest your data' });
+    return NextResponse.json({ error: 'Failed to delete your data' });
   } finally {
     if (mongoDbClient) {
       await mongoDbClient.close();
